@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview image</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        #panorama {
+            width: 1200px;
+            height: 650px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="panorama"></div>
+
+    <!-- Button to capture screenshot -->
+    <button id="screenshot-btn" class="btn btn-primary">Capture Screenshot</button>
+
+    <!-- Modal popup to show captured screenshot and form inputs -->
+    <div class="modal fade" id="screenshot-modal" tabindex="-1" role="dialog" aria-labelledby="screenshot-modal-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="screenshot-modal-label">Screenshot</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Image tag to display captured screenshot -->
+                    <img id="screenshot-img" src="" alt="Screenshot">
+
+                    <!-- Form inputs for name, email, and phone number -->
+                    <form>
+                        <div class="form-group">
+                            <label for="name-input">Name</label>
+                            <input type="text" class="form-control" id="name-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="email-input">Email</label>
+                            <input type="email" class="form-control" id="email-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone-input">Phone number</label>
+                            <input type="tel" class="form-control" id="phone-input">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="submit-btn">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+
+
+    <script>
+        
+        pannellum.viewer('panorama', {
+            "type": "equirectangular",
+            "panorama": "https://pannellum.org/images/tocopilla.jpg",
+            "panoramaOptions": {
+                "preserveDrawingBuffer": true
+            }
+          });
+          
+          $(document).ready(function() {
+            $('#screenshot-btn').click(function() {
+              // Add a delay of 1 second to ensure that the viewer has fully loaded
+              setTimeout(function() {
+                // Use HTML2Canvas library to capture a screenshot of the Pannellum viewer
+                html2canvas(document.getElementById('panorama'), {
+                  useCORS: true, // Added to allow cross-origin images to be captured
+                  logging: true,
+                  allowTaint: true,
+                  background: '#FFFFFF',
+                }).then(function(canvas) {
+                  // Set the captured image as the source of the img tag inside the modal
+                  var img = document.getElementById('screenshot-img');
+                  img.src = canvas.toDataURL();
+                  img.style.width = '100%';
+          
+                  // Show the modala
+                  $('#screenshot-modal').modal('show');
+                });
+              }, 1000); // 1 second delay
+            });
+          
+            $('#submit-btn').click(function() {
+              // Get the values entered in the form
+              var name = $('#name-input').val();
+              var email = $('#email-input').val();
+              var phone = $('#phone-input').val();
+          
+              // Do something with the form data (e.g. send it to a server)
+              console.log('Name:', name);
+              console.log('Email:', email);
+              console.log('Phone:', phone);
+          
+              // Hide the modal
+              $('#screenshot-modal').modal('hide');
+            });
+          });
+          
+    </script>
+    </body>
+    </html>
